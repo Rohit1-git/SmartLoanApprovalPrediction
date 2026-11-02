@@ -1,0 +1,41 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Home | SmartLoan{% endblock %}
+{% block content %}
+<section class="hero">
+    <div>
+        <span class="eyebrow">BCA MACHINE LEARNING MINI PROJECT</span>
+        <h1>Understand data.<br><em>Predict loan status.</em></h1>
+        <p>Upload a loan dataset, clean and explore the information, train a machine learning model, and test a new applicant record.</p>
+        <a class="primary" href="{% url 'upload' %}">Get Started <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="hero-card">
+        <div class="hero-icon">₹</div>
+        <h3>Smart Loan Analysis</h3>
+        <p>A learning project that demonstrates data preprocessing, visualization and classification.</p>
+        <div class="status-line"><span></span> Django application ready</div>
+    </div>
+</section>
+
+<h2 class="section-title">Project overview</h2>
+<div class="cards">
+    <div class="stat"><span>DATASET RECORDS</span><strong>{{ meta.rows|default:"—" }}</strong><small>Records after cleaning</small></div>
+    <div class="stat"><span>DATASET COLUMNS</span><strong>{{ meta.columns|default:"—" }}</strong><small>Including target column</small></div>
+    <div class="stat"><span>TEST ACCURACY</span><strong>{% if meta %}{{ meta.metrics.accuracy }}%{% else %}—{% endif %}</strong><small>Held-out test data</small></div>
+    <div class="stat"><span>ALGORITHM</span><strong class="model-name">Logistic<br>Regression</strong><small>Binary classification</small></div>
+</div>
+
+<section class="panel">
+    <h2>How the system works</h2>
+    <div class="steps">
+        <div><b>01</b><strong>Upload</strong><p>Choose a CSV or Excel loan dataset.</p></div>
+        <div><b>02</b><strong>Prepare</strong><p>Clean, impute, scale and encode the data.</p></div>
+        <div><b>03</b><strong>Analyze</strong><p>View dataset summaries and EDA charts.</p></div>
+        <div><b>04</b><strong>Predict</strong><p>Enter applicant details and view the model output.</p></div>
+    </div>
+</section>
+
+<section class="panel note-panel">
+    <h2>Important project note</h2>
+    <p>This is an educational demonstration. A model prediction is not a real bank decision, credit assessment or financial recommendation. Use a genuine Kaggle dataset with at least 500 records for your final college submission.</p>
+</section>
+{% endblock %}

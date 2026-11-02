@@ -1,0 +1,54 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Analytics | SmartLoan{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <span class="eyebrow">STEP 03</span>
+    <h1>Model &amp; visual analytics</h1>
+    <p>Review the model's test-set performance and explore patterns in the uploaded dataset.</p>
+</div>
+{% if meta %}
+<div class="cards">
+    <div class="stat"><span>ACCURACY</span><strong>{{ meta.metrics.accuracy }}%</strong><small>Correct test predictions</small></div>
+    <div class="stat"><span>PRECISION</span><strong>{{ meta.metrics.precision }}%</strong><small>Approved predictions that were correct</small></div>
+    <div class="stat"><span>RECALL</span><strong>{{ meta.metrics.recall }}%</strong><small>Actual approved cases identified</small></div>
+    <div class="stat"><span>F1 SCORE</span><strong>{{ meta.metrics.f1 }}%</strong><small>Balance of precision and recall</small></div>
+</div>
+
+<div class="panel">
+    <h2>Confusion matrix</h2>
+    <p class="muted">Rows are actual labels and columns are model predictions. Y = Approved, N = Rejected.</p>
+    <div class="table-wrap matrix-wrap">
+        <table class="matrix-table">
+            <thead><tr><th>Actual \ Predicted</th><th>Rejected (N)</th><th>Approved (Y)</th></tr></thead>
+            <tbody>
+                <tr><th>Rejected (N)</th><td>{{ meta.metrics.confusion_matrix.0.0 }}</td><td>{{ meta.metrics.confusion_matrix.0.1 }}</td></tr>
+                <tr><th>Approved (Y)</th><td>{{ meta.metrics.confusion_matrix.1.0 }}</td><td>{{ meta.metrics.confusion_matrix.1.1 }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="small-note">Evaluation used {{ meta.metrics.test_records }} records held out from model training.</p>
+</div>
+
+<div class="panel">
+    <h2>Exploratory data analysis charts</h2>
+    <div class="chart-grid">
+        {% for key, image_data in charts.items %}
+        <figure class="chart-card">
+            <figcaption>
+                {% if key == 'target' %}Loan status distribution
+                {% elif key == 'hist' %}Numerical feature distribution
+                {% elif key == 'box' %}Box plot and outlier overview
+                {% elif key == 'heatmap' %}Correlation heatmap
+                {% else %}Scatter plot / feature relationship{% endif %}
+            </figcaption>
+            <img src="data:image/png;base64,{{ image_data }}" alt="{{ key }} chart">
+        </figure>
+        {% empty %}
+        <p>Charts are not available for this dataset.</p>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="empty panel"><h2>Analytics will appear here</h2><p>Upload and process a dataset first.</p><a class="primary" href="{% url 'upload' %}">Upload dataset</a></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'dashboard/base.html' %}
+{% block title %}Upload Dataset | SmartLoan{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <span class="eyebrow">STEP 01</span>
+    <h1>Upload your dataset</h1>
+    <p>Upload a loan approval dataset in CSV or Excel format. SmartLoan will validate, prepare and train a model.</p>
+</div>
+<div class="panel narrow">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label class="upload-box" for="dataset-file">
+            <div class="upload-symbol">↑</div>
+            <h2>Choose a dataset file</h2>
+            <p>Supported formats: .csv and .xlsx · Maximum size: 10 MB</p>
+            <input id="dataset-file" type="file" name="dataset" accept=".csv,.xlsx" required>
+        </label>
+        <div class="notice">
+            <strong>Required target column:</strong> <code>Loan_Status</code><br>
+            Supported values: <code>Y/N</code>, <code>Yes/No</code>, <code>Approved/Rejected</code>, or <code>1/0</code>.<br>
+            Your college guideline requires at least <strong>500 records</strong>, with both numerical and categorical features.
+        </div>
+        <button class="primary full" type="submit">Upload &amp; Train Model <span aria-hidden="true">→</span></button>
+    </form>
+    {% if meta %}<p class="small-note">An active model is already available with {{ meta.rows }} records. A successful new upload will replace it.</p>{% endif %}
+</div>
+{% endblock %}

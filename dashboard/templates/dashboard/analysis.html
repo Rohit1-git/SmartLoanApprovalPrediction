@@ -1,0 +1,89 @@
+{% extends 'dashboard/base.html' %}
+{% load dict_extras %}
+{% block title %}Data Summary | SmartLoan{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <span class="eyebrow">STEP 02</span>
+    <h1>Dataset summary</h1>
+    <p>Review the active dataset, its dimensions, data quality and first ten records.</p>
+</div>
+
+{% if meta %}
+<div class="cards three">
+    <div class="stat"><span>VALID RECORDS</span><strong>{{ meta.rows }}</strong><small>After removing duplicates and invalid targets</small></div>
+    <div class="stat"><span>DATASET COLUMNS</span><strong>{{ meta.columns }}</strong><small>Including Loan_Status</small></div>
+    <div class="stat"><span>DUPLICATES REMOVED</span><strong>{{ meta.duplicates_removed }}</strong><small>Repeated rows removed</small></div>
+</div>
+
+<div class="panel">
+    <h2>Dataset information</h2>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Information</th><th>Value</th></tr></thead>
+            <tbody>
+                <tr><td>Original records</td><td>{{ meta.original_rows }}</td></tr>
+                <tr><td>Records after cleaning</td><td>{{ meta.rows }}</td></tr>
+                <tr><td>Total columns after cleaning</td><td>{{ meta.columns }}</td></tr>
+                <tr><td>Duplicate records removed</td><td>{{ meta.duplicates_removed }}</td></tr>
+                <tr><td>Invalid target rows removed</td><td>{{ meta.invalid_target_rows_removed }}</td></tr>
+                <tr><td>Missing feature values before imputation</td><td>{{ meta.missing_total }}</td></tr>
+                <tr><td>Numerical features</td><td>{{ meta.numeric_features|length }}</td></tr>
+                <tr><td>Categorical features</td><td>{{ meta.categorical_features|length }}</td></tr>
+                <tr><td>Target column</td><td>{{ meta.target }}</td></tr>
+                <tr><td>Model</td><td>{{ meta.model_name }}</td></tr>
+                <tr><td>Training / testing records</td><td>{{ meta.train_records }} / {{ meta.test_records }}</td></tr>
+                <tr><td>Features selected by model</td><td>{{ meta.selected_feature_count }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+    {% if meta.dropped_columns %}<p class="small-note">Removed irrelevant or constant columns: {{ meta.dropped_columns|join:", " }}</p>{% endif %}
+</div>
+
+<div class="panel">
+    <h2>Missing values by column</h2>
+    <p class="muted">Counts are shown before the model fills missing feature values using median or most-frequent imputation.</p>
+    <div class="table-wrap">
+        <table>
+            <thead><tr><th>Column name</th><th>Missing values</th></tr></thead>
+            <tbody>
+                {% for key, value in meta.missing.items %}
+                <tr><td>{{ key }}</td><td>{{ value }}</td></tr>
+                {% empty %}
+                <tr><td colspan="2">No missing-value details are available.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="panel">
+    <h2>First 10 dataset records</h2>
+    {% if preview and columns %}
+    <div class="table-wrap">
+        <table>
+            <thead><tr>{% for column in columns %}<th>{{ column }}</th>{% endfor %}</tr></thead>
+            <tbody>
+                {% for row in preview %}
+                <tr>{% for column in columns %}<td>{{ row|get_item:column }}</td>{% endfor %}</tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}<p>The preview is not available. Upload the dataset again to refresh it.</p>{% endif %}
+</div>
+
+<div class="panel">
+    <h2>Continue to the next step</h2>
+    <div class="button-row">
+        <a class="primary" href="{% url 'analytics' %}">View analytics</a>
+        <a class="primary secondary-button" href="{% url 'predict' %}">Predict loan status</a>
+    </div>
+</div>
+{% else %}
+<div class="empty panel">
+    <h2>No dataset uploaded yet</h2>
+    <p>Upload a CSV or XLSX file containing a <strong>Loan_Status</strong> target column and at least 500 records.</p>
+    <a class="primary" href="{% url 'upload' %}">Upload dataset</a>
+</div>
+{% endif %}
+{% endblock %}

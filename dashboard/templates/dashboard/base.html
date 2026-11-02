@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SmartLoan BCA mini project for educational loan approval prediction.">
+    <title>{% block title %}SmartLoan Prediction System{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'dashboard/style.css' %}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" href="{% url 'home' %}">
+        <span class="logo">SL</span>
+        <span>SMARTLOAN <small>PREDICTION SYSTEM</small></span>
+    </a>
+    <nav aria-label="Main navigation">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'upload' %}">Upload Dataset</a>
+        <a href="{% url 'analysis' %}">Data Summary</a>
+        <a href="{% url 'analytics' %}">Analytics</a>
+        <a href="{% url 'predict' %}" class="nav-button">Predict Loan</a>
+    </nav>
+</header>
+<main class="container">
+    {% if messages %}
+    <div class="messages" role="status">
+        {% for message in messages %}
+        <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</main>
+<footer>SmartLoan · BCA Mini Project · Python + Django + Machine Learning</footer>
+</body>
+</html>
